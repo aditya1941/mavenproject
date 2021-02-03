@@ -1,0 +1,24 @@
+node('master')
+{
+    stage('CDownload')
+    {
+        git 'https://github.com/aditya1941/mavenproject.git'
+    }
+    stage('CBuild')
+    {
+        sh 'mvn package'
+    }
+    stage('CDeploy')
+    {
+        sh 'scp /home/ubuntu/.jenkins/workspace/scripted/webapp/target/webapp.war ubuntu@172.31.12.81:/var/lib/tomcat9/webapps/qa.war'
+    }
+    stage('CTest')
+    {
+        git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+        sh 'java -jar /home/ubuntu/.jenkins/workspace/scripted/testing.jar'
+    }
+    stage('CDelivery')
+    {
+        sh 'scp /home/ubuntu/.jenkins/workspace/scripted/webapp/target/webapp.war ubuntu@172.31.10.48:/var/lib/tomcat9/webapps/pr.war'
+    }
+}
