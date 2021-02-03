@@ -95,6 +95,27 @@ pipeline
         }
         }
     }
-        
+     post
+     {
+     success
+     {
+     echo 'success'
+     }
+     failure
+     {
+     echo 'failure'
+     }
+     always
+     {
+     echo 'executed'
+     }
+     abort
+     {
+     echo 'aborted'
+     }
+     change
+     {
+     echo 'changed'
+     }
     }
 }
