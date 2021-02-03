@@ -3,47 +3,29 @@ pipeline
     agent {label 'master'}
     stages
     {
-        stage('ContinuousDownload')
+        stage('ContinuousDownload_Loans')
         {
             steps
             {
                 git 'https://github.com/intelliqittrainings/maven.git'
             }
         }
-        stage('ContinuousBuild')
+        stage('ContinuousBuild_Loans')
         {
             steps
             {
                sh 'mvn package'
             }
         }
-         stage('ContinuousDeployment')
+         stage('ContinuousDeployment_Loans')
         {
             steps
             {
               sh 'scp /home/ubuntu/.jenkins/workspace/mpipe/webapp/target/webapp.war ubuntu@172.31.12.81:/var/lib/tomcat9/webapps/myapp.war'
             }
         }
-         stage('ContinuousTesting')
-        {
-            steps
-            {
-              git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
-               sh 'java -jar /home/ubuntu/.jenkins/workspace/mpipe/testing.jar' 
-              
-            }
-           
-        }
-         stage('ContinuousDelivery')
-        {
-            steps
-            {
-                input message: 'Required approval from the DM!', submitter: 'srinivas'
-              sh 'scp /home/ubuntu/.jenkins/workspace/mpipe/webapp/target/webapp.war ubuntu@172.31.10.48:/var/lib/tomcat9/webapps/myprodapp.war'
-              
-            }
-           
-        }
-        
+             
+               
+                
     }
 }
