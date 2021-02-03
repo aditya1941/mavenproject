@@ -1,0 +1,93 @@
+pipeline
+{
+    agent {label 'master'}
+    stages('CICD')
+    {
+        stage('CDownload')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                        git 'https://github.com/aditya1941/mavenproject.git'
+                    }
+                    catch(Exception e1)
+                    {
+                        echo 'CDownload Failed'
+                    }
+                    
+                }
+            }
+        }
+        stage('CBuild')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                        sh 'mvn package'
+                    }
+                    catch(Exception e2)
+                    {
+                        echo 'CBuild Failed'
+                    }
+                    
+                }
+            }
+        }stage('CDeploy')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                       sh 'scp /home/ubuntu/.jenkins/workspace/declaritive/webapp/target/webapp.war ubuntu@172.31.12.81:/var/lib/tomcat9/webapps/qaaap.war' 
+                    }
+                    catch(Exception e3)
+                    {
+                        echo 'deploy failed'
+                    }
+                }
+            }
+        }stage('Ctest')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                        git 'https://github.com/intelliqittrainings/FunctionalTesting.git'
+                        sh 'java -jar /home/ubuntu/.jenkins/workspace/declaritive/testing.jar'
+                    }
+                    catch(Exception e4)
+                    {
+                        echo 'testing failes'
+                    }
+                }
+            }
+        }stage('CDelivery')
+        {
+            steps
+            {
+                script
+                {
+                    try
+                    {
+                        sh 'scp /home/ubuntu/.jenkins/workspace/declaritive/webapp/target/webapp.war ubuntu@172.31.10.48:/var/lib/tomcat9/webapps/prod.war'
+                    }
+                    catch(Exception e5)
+                    {
+                        echo 'delivery failed'
+                    }
+                    
+                }
+            }
+        }
+    }
+}
